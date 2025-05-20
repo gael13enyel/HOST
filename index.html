@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Encuentra Impresoras en tu Zona</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+  <header class="bg-white shadow p-4">
+    <h1 class="text-2xl font-bold text-center">Encuentra Impresoras Cerca de Ti</h1>
+  </header>
+
+  <main class="p-6 max-w-3xl mx-auto space-y-6">
+    <!-- Buscador -->
+    <div class="bg-white p-4 rounded-lg shadow space-y-4">
+      <label for="locationInput" class="block font-semibold">Buscar por ciudad o código postal:</label>
+      <input
+        id="locationInput"
+        type="text"
+        placeholder="Ej. Madrid, 28001"
+        class="w-full p-2 border rounded"
+      />
+      <div class="flex gap-4">
+        <button
+          onclick="buscarImpresoras()"
+          class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+        >
+          Buscar
+        </button>
+        <button
+          onclick="usarUbicacion()"
+          class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"
+        >
+          Usar mi ubicación
+        </button>
+      </div>
+    </div>
+
+    <!-- Opciones de impresión -->
+    <div class="bg-white p-4 rounded-lg shadow space-y-4">
+      <h2 class="text-lg font-bold">Detalles del archivo a imprimir</h2>
+
+      <!-- Tamaño del archivo -->
+      <div>
+        <label for="tamanoArchivo" class="block font-semibold mb-1">Tamaño del papel:</label>
+        <select id="tamanoArchivo" class="w-full p-2 border rounded">
+          <option value="A4">A4</option>
+          <option value="A3">A3</option>
+          <option value="Carta">Carta</option>
+          <option value="Oficio">Oficio</option>
+        </select>
+      </div>
+
+      <!-- Subir archivo -->
+      <div>
+        <label for="archivo" class="block font-semibold mb-1">Subir archivo:</label>
+        <input type="file" id="archivo" accept=".pdf,.jpg,.jpeg,.png" class="w-full p-2 border rounded bg-white" onchange="mostrarArchivo()" />
+      </div>
+
+      <div id="resumenArchivo" class="text-sm text-gray-600"></div>
+    </div>
+
+    <!-- Resultados -->
+    <div id="resultados" class="space-y-4"></div>
+  </main>
+
+  <script>
+    function buscarImpresoras() {
+      const input = document.getElementById("locationInput").value;
+      mostrarResultados(input || "tu ubicación");
+    }
+
+    function usarUbicacion() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            mostrarResultados(`Lat: ${latitude.toFixed(2)}, Lon: ${longitude.toFixed(2)}`);
+          },
+          () => {
+            alert("No se pudo obtener tu ubicación.");
+          }
+        );
+      } else {
+        alert("La geolocalización no está soportada en tu navegador.");
+      }
+    }
+
+    function mostrarResultados(ubicacion) {
+      const tamano = document.getElementById("tamanoArchivo").value;
+      const archivoInput = document.getElementById("archivo");
+      const archivoNombre = archivoInput.files[0]?.name || "No se subió archivo";
+
+      const container = document.getElementById("resultados");
+      container.innerHTML = `
+        <h2 class="text-xl font-bold">Resultados cerca de: ${ubicacion}</h2>
+        <p class="text-sm text-gray-600 mb-2">Tamaño seleccionado: ${tamano} | Archivo: ${archivoNombre}</p>
+
+        <div class="bg-white p-4 rounded shadow">
+          <h3 class="font-semibold">CopyPrint Express</h3>
+          <p>Dirección: Calle Falsa 123</p>
+          <p>Teléfono: 912 345 678</p>
+        </div>
+        <div class="bg-white p-4 rounded shadow">
+          <h3 class="font-semibold">Impresiones Rápidas</h3>
+          <p>Dirección: Avenida Siempre Viva 742</p>
+          <p>Teléfono: 911 111 222</p>
+        </div>
+      `;
+    }
+
+    function mostrarArchivo() {
+      const archivo = document.getElementById("archivo").files[0];
+      const resumen = document.getElementById("resumenArchivo");
+      if (archivo) {
+        resumen.textContent = `Archivo seleccionado: ${archivo.name} (${(archivo.size / 1024).toFixed(1)} KB)`;
+      } else {
+        resumen.textContent = "";
+      }
+    }
+  </script>
+</body>
+</html>
