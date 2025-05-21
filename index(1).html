@@ -42,7 +42,6 @@
     <div class="bg-white p-4 rounded-lg shadow space-y-4">
       <h2 class="text-lg font-bold">Detalles del archivo a imprimir</h2>
 
-      <!-- Tamaño del archivo -->
       <div>
         <label for="tamanoArchivo" class="block font-semibold mb-1">Tamaño del papel:</label>
         <select id="tamanoArchivo" class="w-full p-2 border rounded">
@@ -53,7 +52,6 @@
         </select>
       </div>
 
-      <!-- Subir archivo -->
       <div>
         <label for="archivo" class="block font-semibold mb-1">Subir archivo:</label>
         <input type="file" id="archivo" accept=".pdf,.jpg,.jpeg,.png" class="w-full p-2 border rounded bg-white" onchange="mostrarArchivo()" />
@@ -62,7 +60,26 @@
       <div id="resumenArchivo" class="text-sm text-gray-600"></div>
     </div>
 
-    <!-- Resultados -->
+    <!-- Sección de pago -->
+    <div class="bg-white p-4 rounded-lg shadow space-y-4">
+      <h2 class="text-lg font-bold">Pago</h2>
+
+      <label for="metodoPago" class="block font-semibold mb-1">Método de pago:</label>
+      <select id="metodoPago" class="w-full p-2 border rounded">
+        <option value="tarjeta">Tarjeta de crédito</option>
+        <option value="paypal">PayPal</option>
+        <option value="efectivo">Pago en tienda</option>
+      </select>
+
+      <button
+        onclick="procesarPago()"
+        class="w-full bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition"
+      >
+        Pagar ahora
+      </button>
+    </div>
+
+    <!-- Resultados de papelerías -->
     <div id="resultados" class="space-y-4"></div>
   </main>
 
@@ -95,19 +112,10 @@
 
       const container = document.getElementById("resultados");
       container.innerHTML = `
-        <h2 class="text-xl font-bold">Resultados cerca de: ${ubicacion}</h2>
+        <h2 class="text-xl font-bold">Papelerías cerca de: ${ubicacion}</h2>
         <p class="text-sm text-gray-600 mb-2">Tamaño seleccionado: ${tamano} | Archivo: ${archivoNombre}</p>
 
-        <div class="bg-white p-4 rounded shadow">
-          <h3 class="font-semibold">CopyPrint Express</h3>
-          <p>Dirección: Calle Falsa 123</p>
-          <p>Teléfono: 912 345 678</p>
-        </div>
-        <div class="bg-white p-4 rounded shadow">
-          <h3 class="font-semibold">Impresiones Rápidas</h3>
-          <p>Dirección: Avenida Siempre Viva 742</p>
-          <p>Teléfono: 911 111 222</p>
-        </div>
+        ${generarPapeleriasFalsas()}
       `;
     }
 
@@ -120,6 +128,44 @@
         resumen.textContent = "";
       }
     }
+
+    function procesarPago() {
+      const metodo = document.getElementById("metodoPago").value;
+      alert(`✅ Pago procesado con éxito usando ${metodo.toUpperCase()}.\nTu archivo será enviado a la papelería seleccionada.`);
+    }
+
+    function generarPapeleriasFalsas() {
+      const lista = [
+        {
+          nombre: "Papelería Central",
+          direccion: "Calle Mayor 123, Madrid",
+          telefono: "912 345 678",
+          horario: "Lunes a Sábado: 9:00 - 20:00",
+        },
+        {
+          nombre: "ImprimeFácil",
+          direccion: "Av. del Trabajo 45, Getafe",
+          telefono: "911 222 333",
+          horario: "Lunes a Viernes: 8:00 - 18:00",
+        },
+        {
+          nombre: "Copias Express",
+          direccion: "Calle de la Paz 78, Leganés",
+          telefono: "914 567 890",
+          horario: "Todos los días: 10:00 - 22:00",
+        }
+      ];
+
+      return lista.map(papeleria => `
+        <div class="bg-white p-4 rounded shadow border">
+          <h3 class="text-lg font-semibold">${papeleria.nombre}</h3>
+          <p><strong>Dirección:</strong> ${papeleria.direccion}</p>
+          <p><strong>Teléfono:</strong> ${papeleria.telefono}</p>
+          <p><strong>Horario:</strong> ${papeleria.horario}</p>
+        </div>
+      `).join('');
+    }
   </script>
 </body>
 </html>
+
